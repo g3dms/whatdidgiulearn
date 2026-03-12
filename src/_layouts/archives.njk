@@ -1,0 +1,21 @@
+---
+layout: base.njk
+---
+
+{% block content %}
+<article class="max-w-3xl mx-auto">
+  <h1 class="text-4xl font-bold mb-2">{{ title }}</h1>
+  <p class="text-gray-500 mb-8">Past entries and updates</p>
+  
+  <div class="space-y-12">
+    {% for entry in entries %}
+    <section class="border-l-4 border-gray-200 pl-6">
+      <h2 class="text-2xl font-semibold mb-2">{{ entry.period }}</h2>
+      <div class="prose">
+        {{ entry.content | safe }}
+      </div>
+    </section>
+    {% endfor %}
+  </div>
+</article>
+{% endblock %}

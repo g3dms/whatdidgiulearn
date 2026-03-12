@@ -1,0 +1,14 @@
+---
+title: Glossary
+layout: page.njk
+---
+
+# What does this mean?
+
+{% for entry in collections.til | reverse %}
+  <article>
+    <h2>{{ entry.data.title }}</h2>
+    <time>{{ entry.data.date | readableDate }}</time>
+    <div>{{ entry.templateContent | safe }}</div>
+  </article>
+{% endfor %}

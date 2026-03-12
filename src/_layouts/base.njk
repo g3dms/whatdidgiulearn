@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Lee">
+    <meta name="description" content="Website about learning how to code">
+    <link rel="icon" href="">
+    <link rel="stylesheet" href="/assets/styles/index.css">
+    <title>{{ title }} | whatdidgiulearn</title>
+</head>
+<body class="bg-white antialiased">
+    <div class="max-w-2xl mx-auto w-full">
+        <header class="py-8">
+            <h1 class="text-4xl font-bold mb-4 px-4">📕 whatdidgiudo</h1>
+            <nav class="space-x-4 mt-4">
+                <a href="/home" class="hover:underline">/home</a>
+                <a href="/blog" class="hover:underline">/blog</a>
+                <a href="/cpl" class="hover:underline">/cpl</a>
+                <a href="/til" class="hover:underline">/til</a>
+                <a href="/glossary" class="hover:underline">/glossary</a>
+                <a href="/questions" class="hover:underline">/questions</a>
+                <a href="/lessons" class="hover:underline">/lessons</a>
+                <a href="/now" class="hover:underline">/now</a>
+                <a href="/uses" class="hover:underline">/uses</a>
+            </nav>
+
+            <hr class="border-0 h-px bg-gray-300 mt-4">
+        </header>
+        
+        <main class="">
+            {{ content | safe }}
+        </main>
+        
+        <footer class="py-6 text-gray-600 text-center">
+            <p>whatdidgiulearn © 2026 -</p>
+        </footer>
+    </div>
+</body>
+</html>

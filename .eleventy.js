@@ -1,41 +1,81 @@
 const htmlmin = require("html-minifier-terser");
 const { eleventyImageTransformPlugin } = require("@11ty/eleventy-img");
 
-
-
-module.exports.config = {
-  dir: {
-    // These are both relative to your input directory!
-    includes: "_includes",
-    layouts: "_layouts",
-    output: "_site"
-  }
-};
-
 module.exports = function (eleventyConfig) {
-	eleventyConfig.addTransform("htmlmin", function (content) {
-		// String conversion to handle `permalink: false`
-		if ((this.page.outputPath || "").endsWith(".html")) {
-			let minified = htmlmin.minify(content, {
-				useShortDoctype: true,
-				removeComments: true,
-				collapseWhitespace: true,
-			});
+    // HTML minification transform
+    eleventyConfig.addTransform("htmlmin", function (content) {
+        if ((this.page.outputPath || "").endsWith(".html")) {
+            return htmlmin.minify(content, {
+                useShortDoctype: true,
+                removeComments: true,
+                collapseWhitespace: true,
+            });
+        }
+        return content;
+    });
 
-			return minified;
-		}
+    // Image transform plugin
+    eleventyConfig.addPlugin(eleventyImageTransformPlugin);
 
-		// If not an HTML output, return content as-is
-		return content;
-	});
-};
+    // Layout aliasing
+    eleventyConfig.addLayoutAlias("post", "layouts/post.njk");
 
-// HTML transform
-module.exports = function (eleventyConfig) {
-	eleventyConfig.addPlugin(eleventyImageTransformPlugin);
-};
+    eleventyConfig.addWatchTarget("/src/assets/styles/index.css");
 
-// Layout aliasing
-module.exports = function(eleventyConfig) {
-	eleventyConfig.addLayoutAlias("post", "layouts/post.njk");
+
+    eleventyConfig.addCollection("blog", function (collectionApi) {
+        return collectionApi.getFilteredByGlob("src/blog/posts/*.md");
+    });
+    eleventyConfig.addCollection("cpl", function (collectionApi) {
+        return collectionApi.getFilteredByGlob("src/cpl/posts/*.md");
+    });
+    eleventyConfig.addCollection("til", function (collectionApi) {
+        return collectionApi.getFilteredByGlob("src/til/posts/*.md");
+    });
+    eleventyConfig.addCollection("glossary", function (collectionApi) {
+        return collectionApi.getFilteredByGlob("src/glossary/posts/*.md");
+    });
+    eleventyConfig.addCollection("questions", function (collectionApi) {
+        return collectionApi.getFilteredByGlob("src/questions/posts/*.md");
+    });
+
+    eleventyConfig.addFilter("readableDate", (dateObj) => {
+        if (!dateObj) return "";
+        return dateObj.toLocaleDateString('en-us', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    });
+
+    eleventyConfig.addFilter("getCurrentYear", () => {
+        return new Date().getFullYear();
+    });
+
+    eleventyConfig.addFilter("dateIso", (dateObj) => {
+        return dateObj.toISOString().split('T')[0];
+    });
+
+    eleventyConfig.addFilter("excerpt", (content) => {
+        if (!content) return "";
+        const excerpt = content.split('</p>')[0] + '</p>';
+        return excerpt.replace(/<[^>]*>/g, '');
+    });
+
+    eleventyConfig.addFilter("newestFirst", (arr) => {
+        return arr.sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+        });
+    });
+
+    return {
+        dir: {
+            input: "src",
+            output: "_site",
+            includes: "_includes",
+            layouts: "_layouts"
+        },
+        markdownTemplateEngine: "njk",
+        htmlTemplateEngine: "njk",
+    };
 };

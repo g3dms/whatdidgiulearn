@@ -61,3 +61,11 @@ Oh it's already added. im so dumb
 
 permalink: "/{{ title | slugify }}/"
 
+Dark mode
+With Tailwind, having a dark and light mode of your website is a breeze. You simply add a dark: prefix to classes you want to be applied in dark mode. For example, this button is black with white text in light mode, and white with black text in dark mode. Easy.
+
+<button class="bg-black dark:bg-white
+               text-white dark:text-black
+               p-2">
+  Click me!
+</button>
