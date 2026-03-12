@@ -1,0 +1,34 @@
+1. Create empty project folder
+2. Initialize npm (npm init -y)
+3. Install eleventy locally (npm install @11ty/eleventy --save-dev)
+4. Create basic folder structure manually:
+   - src/
+   - src/_includes/
+   - src/_data/
+   - public/
+   - public/css/
+5. Create your first .eleventy.js config file from scratch
+6. Add build script to package.json ("build": "eleventy")
+7. Run build and look at empty _site folder
+
+8. Create src/index.njk with "Hello World"
+9. Create src/_includes/layouts/base.njk with basic HTML structure
+10. Connect index.njk to base.njk using layout frontmatter
+11. Build and open _site/index.html in browser
+12. See the HTML you generated with your own two hands
+
+13. Create src/_data/site.json with title, author, etc
+14. Use {{ site.title }} in your layout
+15. Build and verify data appears
+
+16. Create src/blog/first-post.md with frontmatter
+17. Write a layout for blog posts
+18. Build and find your post at _site/blog/first-post/index.html
+19. Add another post
+20. Realize: wait, I need a list of posts...
+
+21. Open .eleventy.js and add a "posts" collection
+22. Create src/blog/index.njk that loops through collections.posts
+23. Build and see your blog list
+24. Click through to individual posts
+

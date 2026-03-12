@@ -1,0 +1,63 @@
+Initial commit
+
+1. Install package.json with npm init -y
+This creates a package.json file, which Eleventy needs
+-y tells npm to use default values
+
+2. Install Eleventy with npm install @11ty/eleventy
+To run, npx @11ty/eleventy
+
+Wrote 0 files: Eleventy did not process files
+
+3. Install Tailwind
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init (NO LONGER WORKS IN NPM)
+error happens when -
+tailwindcss CLI is not installed (?)
+package.json in project (there is)
+npx cannot locate executable
+
+
+Searched in Stack Overflow -> decide to manually make postcss.config.js and tailwind.config.js
+
+Ok decided to just look for a tailwind installation guide
+Installed tailwind v4, installed cli with npm
+STUPID MISTAKE: thought i had to type @import "tailwindcss" into cmd, NO, you import it into main file
+Start tailwind cli build process -> builds css and adds tailwind
+voila!
+
+You need tailwind and eleventy to run simultaneously, so there is a package npm-run-all
+Installed with npm install npm-run-all --save-dev
+Then modify package.json to ensure that they both run
+
+4. Making layouts
+if you have a .md file like so
+
+---
+layout: mylayout.njk
+title: hi
+---
+
+# blablabla
+
+... It looks for a mylayout.njk Nunjucks file in _includes folder
+Layout paths can be subdirectories, e.g. layout: "layouts/base.njk" will interpret as _includes/layouts/base.njk
+
+You can have a separate folder for eleventy layouts if you want them separate from _includes... but why
+
+5. Eleventy configuration
+Filters: automatically modify content... (someone farted)
+such as <h1>{{ name | makeUppercase }}</h1>
+
+by
+export default function (eleventyConfig) {
+	eleventyConfig.addFilter("makeUppercase", function(value) { /* … */ });
+
+  eleventyConfig.addAsyncFilter("makeUppercase", async function(value) { /* … */ });
+};
+
+So I wanna add slugify
+Oh it's already added. im so dumb
+
+permalink: "/{{ title | slugify }}/"
+

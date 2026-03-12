@@ -1,0 +1,5 @@
+# Eleventy
+_site/
+
+# Dependencies
+node_modules/
