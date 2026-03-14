@@ -1,11 +1,9 @@
 ---
-title: My Questions
+title: 🤔 today i wondered...
 layout: page.njk
 ---
 
-# Today I Wondered...
-
-{% for entry in collections.til | reverse %}
+{% for entry in collections.questions | reverse %}
   <article class="mb-6 pb-6 border-b">
     <h2 class="text-xl font-semibold">{{ entry.data.title }}</h2>
     <time class="text-gray-500 text-sm">{{ entry.date | readableDate }}</time>
