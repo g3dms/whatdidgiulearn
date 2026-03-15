@@ -1,13 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{njk,md,html}",        
-    "./_layouts/**/*.{njk,html}",     
-    "./_includes/**/*.{njk,html}",     
-    "./.eleventy.js",                
+    "./src/**/*.{njk,md,html}",
+    "./_layouts/**/*.{njk,html}",
+    "./_includes/**/*.{njk,html}",
   ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }

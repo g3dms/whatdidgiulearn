@@ -2,13 +2,31 @@
 layout: base
 ---
 
-<article class="prose prose-lg">
+<article class="prose prose-headings:-m-2 prose-headings:pt-0 prose-headings:mb-2 prose-headings:px-0">
     <header>
-        <h2 class="text-3xl font-bold items-left mb-4">{{ title }}</h2>
+        <h2 class="text-3xl font-bold items-left mb-2">{{ title }}</h2>
         <p class="text-gray-600">
             <time datetime="{{ page.date | dateIso }}">{{ page.date | readableDate }}</time>
         </p>
     </header>
-    
-    {{ content | safe }}
+     {{ content | safe }}
 </article>
+
+{% if tags %}
+<div class="mt-4 mb-2">
+    <span class="text-sm text-gray-500">tags:</span>
+    {% for tag in tags %}
+        <a href="../../tags/{{ tag | slug }}" 
+           class="text-sm bg-gray-100 px-2 py-1 rounded ml-2 hover:bg-gray-200">
+            {{ tag }}
+        </a>
+    {% endfor %}
+</div>
+{% endif %}
+
+<br>
+<div class="mb-6">
+    <a href="javascript:history.back()" class="text-gray-600 hover:text-gray-900 inline-flex items-center hover:underline">
+        ⬅ back
+    </a>
+</div>

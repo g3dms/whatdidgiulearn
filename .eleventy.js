@@ -18,10 +18,9 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPlugin(eleventyImageTransformPlugin);
 
     // Layout aliasing
-    eleventyConfig.addLayoutAlias("post", "layouts/post.njk");
+    eleventyConfig.addLayoutAlias("post", "post.njk");
 
     eleventyConfig.addWatchTarget("/src/assets/styles/index.css");
-
 
     eleventyConfig.addCollection("blog", function (collectionApi) {
         return collectionApi.getFilteredByGlob("src/blog/posts/*.md");
@@ -39,6 +38,73 @@ module.exports = function (eleventyConfig) {
         return collectionApi.getFilteredByGlob("src/questions/posts/*.md");
     });
 
+    const sections = ['blog', 'cpl', 'til', 'glossary', 'questions'];
+
+    sections.forEach(section => {
+        // Generate tag collection for each section
+        eleventyConfig.addCollection(`${section}Tags`, function (collectionApi) {
+            const posts = collectionApi.getFilteredByGlob(`src/${section}/posts/*.md`);
+            const tagsMap = new Map();
+
+            posts.forEach(post => {
+                const postTags = post.data.tags || [];
+                postTags.forEach(tag => {
+                    if (!tagsMap.has(tag)) {
+                        tagsMap.set(tag, []);
+                    }
+                    tagsMap.get(tag).push(post);
+                });
+            });
+
+            // Convert to array and sort alphabetically
+            return Array.from(tagsMap.entries())
+                .map(([tag, posts]) => ({
+                    tag,
+                    posts,
+                    count: posts.length,
+                    section // Include section for context
+                }))
+                .sort((a, b) => a.tag.localeCompare(b.tag));
+        });
+    });
+
+    eleventyConfig.addCollection("allTagsWithSections", function (collectionApi) {
+        const allPosts = [];
+        sections.forEach(section => {
+            const sectionPosts = collectionApi.getFilteredByGlob(`src/${section}/posts/*.md`);
+            allPosts.push(...sectionPosts);
+        });
+
+        const tagsMap = new Map();
+
+        allPosts.forEach(post => {
+            const postTags = post.data.tags || [];
+            const section = post.data.section || extractSectionFromPath(post.inputPath);
+
+            postTags.forEach(tag => {
+                const key = `${section}:${tag}`; // Unique key per section+tag
+                if (!tagsMap.has(key)) {
+                    tagsMap.set(key, {
+                        tag,
+                        section,
+                        posts: [],
+                        count: 0
+                    });
+                }
+                tagsMap.get(key).posts.push(post);
+                tagsMap.get(key).count++;
+            });
+        });
+
+        return Array.from(tagsMap.values())
+            .sort((a, b) => a.section.localeCompare(b.section) || a.tag.localeCompare(b.tag));
+    });
+
+    function extractSectionFromPath(filePath) {
+        const match = filePath.match(/src\/([^\/]+)\//);
+        return match ? match[1] : 'unknown';
+    }
+
     eleventyConfig.addFilter("readableDate", (dateObj) => {
         if (!dateObj) return "";
         return dateObj.toLocaleDateString('en-us', {
@@ -53,20 +119,44 @@ module.exports = function (eleventyConfig) {
     });
 
     eleventyConfig.addFilter("dateIso", (dateObj) => {
+        if (!dateObj) return "";
         return dateObj.toISOString().split('T')[0];
     });
 
-    eleventyConfig.addFilter("excerpt", (content) => {
+    eleventyConfig.addFilter("excerpt", (content, limit = 200) => {
         if (!content) return "";
-        const excerpt = content.split('</p>')[0] + '</p>';
-        return excerpt.replace(/<[^>]*>/g, '');
+
+        const text = content.replace(/<[^>]*>/g, ' ');
+
+        const cleanText = text.replace(/\s+/g, ' ').trim();
+
+        if (cleanText.length > limit) {
+            return cleanText.substring(0, limit).trim() + '...';
+        }
+        return cleanText;
     });
 
     eleventyConfig.addFilter("newestFirst", (arr) => {
-        return arr.sort((a, b) => {
+        if (!arr || !Array.isArray(arr)) return [];
+        return [...arr].sort((a, b) => {
             return new Date(b.date) - new Date(a.date);
         });
     });
+
+    // ============ NEW: TAG-SPECIFIC FILTERS ============
+    eleventyConfig.addFilter("filterByTag", (posts, tag) => {
+        if (!posts || !tag) return [];
+        return posts.filter(post => post.data.tags && post.data.tags.includes(tag));
+    });
+
+    eleventyConfig.addFilter("getTagsForSection", (collection, section) => {
+        // This will use the pre-generated section tags
+        return collection[`${section}Tags`] || [];
+    });
+
+    // ============ NEW: PAGINATION CONFIG FOR TAG PAGES ============
+    // This doesn't add collections but makes pagination data available
+    eleventyConfig.addGlobalData("sections", sections);
 
     return {
         dir: {
