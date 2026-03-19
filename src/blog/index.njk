@@ -8,7 +8,7 @@ title: 🗣️ blog
 
 {% if posts.length > 0 %}
   
-  {% for post in posts %}
+  {% for post in posts | reverse %}
       <h2 class="text-xl font-semibold -mt-4">
           <a href="{{ post.url }}" class="hover:underline">{{ post.data.title }}</a>
       </h2>
@@ -39,7 +39,7 @@ title: 🗣️ blog
     {% for tag in collections.blogTags %}
         <a href="/blog/tags/{{ tag.tag | slug }}" 
            class="text-sm bg-gray-100 px-2 py-1 rounded mr-2 hover:bg-gray-200"
-           style="font-size: {{ 0.8 + (tag.count * 0.1) }}rem;">
+           style="font-size: 0.9rem;">
             {{ tag.tag }} ({{ tag.count }})
         </a>
     {% endfor %}
